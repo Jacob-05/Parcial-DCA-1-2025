@@ -1,10 +1,9 @@
-const response = await fetch("/post.json", {
-  method: "POST",
-  headers: {
-    "Content-Type": "post/json",
-  },
-  body: JSON.stringify({ username: "example" }),
-});
+const response = await fetch("/post.json"); {
+     method: "GET",
+    headers: {
+        "Content-Type": "application/json", 
+}
+ 
 
 class PostCard extends HTMLElement {
 
