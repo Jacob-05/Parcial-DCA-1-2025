@@ -7,20 +7,13 @@ async function loadInitialPosts() {
   }
 }
 
-function getPosts() {
-  return JSON.parse(localStorage.getItem("posts")) || [];
-}
-
-function savePosts(posts) {
-  localStorage.setItem("posts", JSON.stringify(posts));
-}
-
 function addPost(content) {
-  const user = localStorage.getItem("currentUser");
   const post = {
     user,
+    date,
     content,
-    date: new Date().toLocaleString()
+    image,
+    likes,
   };
   const posts = getPosts();
   posts.unshift(post);
@@ -52,10 +45,38 @@ function loadPosts() {
 
 window.onload = async () => {
   await loadInitialPosts();
-  const currentUser = localStorage.getItem("currentUser");
-  if (currentUser) {
-    showMainPage(currentUser);
-  }
 };
 
+class PostCard extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
 
+  connectedCallback() {
+    const id = this.getAttribute('id')
+    const user = this.getAttribute('user')
+    const date = this.getAttribute('content') 
+    const content = this.getAttribute('date') 
+    const image = this.getAttribute('image')
+    const likes = this.getAttribute('likes')
+    const comments = this.getAttribute('comments')
+
+    this.shadowRoot.innerHTML = `
+      <style>
+        .post-card {
+          border: 1px solid #ccc;
+          padding: 10px;
+          margin: 10px 0;
+          border-radius: 5px;
+          background-color: #f9f9f9;
+        }
+        .post-card strong {
+          display: block;
+          margin-bottom: 5px;
+        }
+        .post-card small {
+          color: #666;
+        }
+      </style>
+      <div class="post-card">
