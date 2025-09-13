@@ -13,7 +13,7 @@ fetch('post.json')
         <p><strong>Fecha:</strong> ${new Date(post.date).toLocaleString()}</p>
         <p>${post.content}</p>
         <p><strong>Likes:</strong> ${post.likes}</p>
-        <div><strong>Comentarios:</strong>
+        <div><strong>Comentarios: ${post.comments}</strong>
           <ul>
             ${post.comments.map(c => `<li><b>${c.user}:</b> ${c.text}</li>`).join('')}
           </ul>
@@ -55,7 +55,7 @@ class PostCard extends HTMLElement {
           color: #666;
         }
       </style>
-      <div class="post-card">
+       <div class="post-card">
         <img src="${image}" alt="Imagen de ${user}" style="width:100%;border-radius:8px;">
         <h3>${user}</h3>
         <p><strong>Fecha:</strong> ${new Date(date).toLocaleString()}</p>
@@ -63,7 +63,7 @@ class PostCard extends HTMLElement {
         <p><strong>Likes:</strong> ${likes}</p>
         <div><strong>Comentarios:</strong>
           <ul>
-            ${comments.map(c => `<li><b>${c.user}:</b> ${c.text}</li>`).join('')}
+            ${comments}
           </ul>
         </div>
       </div>
