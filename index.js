@@ -1,51 +1,27 @@
-async function loadInitialPosts() {
-  const stored = getPosts();
-  if (stored.length === 0) {
-    const res = await fetch("posts.json");
-    const data = await res.json();
-    savePosts(data);
-  }
-}
 
-function addPost(content) {
-  const post = {
-    user,
-    date,
-    content,
-    image,
-    likes,
-  };
-  const posts = getPosts();
-  posts.unshift(post);
-  savePosts(posts);
-}
-
-addPostBtn.addEventListener("click", () => {
-  const content = postContent.value.trim();
-  if (content === "") return;
-  addPost(content);
-  postContent.value = "";
-  loadPosts();
-});
-
-function renderPosts(posts) {
-  postsContainer.innerHTML = "";
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.classList.add("post");
-    div.innerHTML = `<strong>${post.user}</strong><br>${post.content}<br><small>${post.date}</small>`;
-    postsContainer.appendChild(div);
+fetch('post.json')
+  .then(res => res.json())
+  .then(posts => {
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+    posts.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${post.image}" alt="Imagen de ${post.user}" style="width:100%;border-radius:8px;">
+        <h3>${post.user}</h3>
+        <p><strong>Fecha:</strong> ${new Date(post.date).toLocaleString()}</p>
+        <p>${post.content}</p>
+        <p><strong>Likes:</strong> ${post.likes}</p>
+        <div><strong>Comentarios:</strong>
+          <ul>
+            ${post.comments.map(c => `<li><b>${c.user}:</b> ${c.text}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+      app.appendChild(card);
+    });
   });
-}
-
-function loadPosts() {
-  let posts = getPosts();
-  renderPosts(posts);
-}
-
-window.onload = async () => {
-  await loadInitialPosts();
-};
 
 class PostCard extends HTMLElement {
   constructor() {
@@ -80,3 +56,38 @@ class PostCard extends HTMLElement {
         }
       </style>
       <div class="post-card">
+        <img src="${image}" alt="Imagen de ${user}" style="width:100%;border-radius:8px;">
+        <h3>${user}</h3>
+        <p><strong>Fecha:</strong> ${new Date(date).toLocaleString()}</p>
+        <p>${content}</p>
+        <p><strong>Likes:</strong> ${likes}</p>
+        <div><strong>Comentarios:</strong>
+          <ul>
+            ${comments.map(c => `<li><b>${c.user}:</b> ${c.text}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+}
+
+customElements.define('post-card', PostCard);
+
+
+fetch('post.json')
+  .then(res => res.json())
+  .then(posts => {
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+    posts.forEach(post => {
+      const postCard = document.createElement('post-card');
+      postCard.setAttribute('id', post.id);
+      postCard.setAttribute('user', post.user);
+      postCard.setAttribute('date', post.date);
+      postCard.setAttribute('content', post.content);
+      postCard.setAttribute('image', post.image);
+      postCard.setAttribute('likes', post.likes);
+      postCard.setAttribute('comments', JSON.stringify(post.comments));
+      app.appendChild(postCard);
+    });
+  });
